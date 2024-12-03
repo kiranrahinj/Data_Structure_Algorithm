@@ -399,31 +399,33 @@ class BinarySearch{
             return ans;
         }
     }
-
-    private static boolean isPossible(int arr[],int mid,int k){
-		int cnt=1,last=arr[0];
-		
-		for(int i=1;i<arr.length;i++){
-			if(arr[i]-last>=mid){
-				cnt++;
-				last=arr[i];
-			}
-		}
-		return cnt>=k;
-	}
-	// Aggressive cows
-	public static int aggressiveCows(int arr[],int c){
-		int start=1,end=(int)1e9;
-		while(start<=end){
-			int mid=start+(end-start)/2;
-			
-			if(isPossible(arr,mid,c)){
-				start=mid+1;
-			}
-			else end=mid-1;
-		}
-		return end;
-	}
+    //Aggressive Cows
+    class Solution_1{
+        private static boolean isPossible(int arr[],int mid,int k){
+            int cnt=1,last=arr[0];
+            
+            for(int i=1;i<arr.length;i++){
+                if(arr[i]-last>=mid){
+                    cnt++;
+                    last=arr[i];
+                }
+            }
+            return cnt>=k;
+        }
+        
+        public static int aggressiveCows(int arr[],int c){
+            int start=1,end=(int)1e9;
+            while(start<=end){
+                int mid=start+(end-start)/2;
+                
+                if(isPossible(arr,mid,c)){
+                    start=mid+1;
+                }
+                else end=mid-1;
+            }
+            return end;
+        }
+    }
 	//Book Allocation
     class Solution3 {
         public static boolean isPossible(int arr[],int mid,int k){
@@ -464,7 +466,7 @@ class BinarySearch{
         }
     }
 
-    
+
 }
 
 public class BS{
