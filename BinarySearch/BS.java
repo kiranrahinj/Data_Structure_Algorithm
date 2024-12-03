@@ -287,6 +287,7 @@ class BinarySearch{
         if(ans==num)return 1;
         return 0;
     }
+    
     public static int nthRoot(int num,int n){
         int start=1,end=num;
 
@@ -303,6 +304,167 @@ class BinarySearch{
         }
         return -1;
     }
+    //875. Koko Eating Bananas problem 
+    class Solution {
+        public static int calculate(int arr[],int mid){
+            int n=arr.length;
+            int hours=0;
+            for(int i=0;i<n;i++){
+                hours+=Math.ceil((double)arr[i]/(double)mid);
+            }
+            return hours;
+        }
+        public int minEatingSpeed(int[] arr, int h) {
+            int mx=0,ans=0;
+            for(int k:arr)mx=Math.max(k,mx);
+            int start=1,end=mx;
+    
+            while(start<=end){
+                int mid=start+(end-start)/2;
+    
+                int hours=calculate(arr,mid);
+                if(hours<=h){
+                    ans=mid;
+                    end=mid-1;
+                }
+                else start=mid+1;
+            }
+            return ans;
+        }
+    }
+    //1482. Minimum Number of Days to Make m Bouquets
+    class Solution1 {
+        public boolean isPossible(int arr[],int m,int k,int mid){
+            int cnt=0,ans=0;
+    
+            for(int i=0;i<arr.length;i++){
+                if(arr[i]<=mid){
+                    cnt++;
+                }else cnt=0;
+    
+                if(cnt==k){
+                    ans++;
+                    cnt=0;
+                    if(ans==m)return true;
+                }
+            }
+            return false;
+        }
+        public int minDays(int[] arr, int m, int k) {
+            if(arr.length<m*k)return -1;
+            int mx=0,ans=-1;
+            for(int k1:arr)mx=Math.max(k1,mx);
+            int start=1,end=mx;
+    
+            while(start<=end){
+                int mid=start+(end-start)/2;
+    
+                if(isPossible(arr,m,k,mid)){
+                    ans=mid;
+                    end=mid-1;
+                }
+                else{
+                    start=mid+1;
+                }
+            }
+            return ans;
+        }
+    }
+    //1283. Find the Smallest Divisor Given a Threshold
+    class Solution2 {
+        public static boolean isPossible(int arr[],int mid,int threshold){
+            int ans=0;
+    
+            for(int i=0;i<arr.length;i++){
+                ans+=Math.ceilDiv(arr[i],mid);
+            }
+            return ans<=threshold;
+        }
+    
+        public int smallestDivisor(int[] arr, int threshold) {
+            int mx=0,ans=0;
+            for(int k:arr)mx=Math.max(mx,k);
+    
+            int start=1,end=mx;
+    
+            while(start<=end){
+                int mid=start+(end-start)/2;
+    
+                if(isPossible(arr,mid,threshold)){
+                    ans=mid;
+                    end=mid-1;
+                }
+                else start=mid+1;
+            }
+            return ans;
+        }
+    }
+
+    private static boolean isPossible(int arr[],int mid,int k){
+		int cnt=1,last=arr[0];
+		
+		for(int i=1;i<arr.length;i++){
+			if(arr[i]-last>=mid){
+				cnt++;
+				last=arr[i];
+			}
+		}
+		return cnt>=k;
+	}
+	// Aggressive cows
+	public static int aggressiveCows(int arr[],int c){
+		int start=1,end=(int)1e9;
+		while(start<=end){
+			int mid=start+(end-start)/2;
+			
+			if(isPossible(arr,mid,c)){
+				start=mid+1;
+			}
+			else end=mid-1;
+		}
+		return end;
+	}
+	//Book Allocation
+    class Solution3 {
+        public static boolean isPossible(int arr[],int mid,int k){
+            int sum=0;
+            int cnt=1;
+            
+            for(int i=0;i<arr.length;i++){
+                sum+=arr[i];
+                if(sum>mid){
+                    cnt++;
+                    sum=arr[i];
+                }
+            }
+            return cnt<=k;
+        }
+    
+        public static int findPages(int[] arr, int threshold) {
+            int ans=-1;
+            int mx=0,sum=0;
+            for(int i:arr){
+                mx=Math.max(mx,i);
+                sum+=i;
+            }
+            //starting is from max because one book need to hold by one stud.
+            //So for that you need to select from max book number to statiesfy 3rd condition
+            int start=mx,end=sum;
+    
+            while(start<=end){
+                int mid=start+(end-start)/2;
+    
+                if(isPossible(arr,mid,threshold)){
+                    ans=mid;
+                    end=mid-1;
+                }
+                else start=mid+1;
+            }
+            return ans;
+        }
+    }
+
+    
 }
 
 public class BS{
