@@ -1,3 +1,4 @@
+import java.util.*;
 class BinarySearch{
     public static int binarySearch(int arr[],int n,int target){
         int start=0,end=n-1;
@@ -465,8 +466,226 @@ class BinarySearch{
             return ans;
         }
     }
+    //Kth Missing number
+    class Solution4{
+        public static int findMissing(int arr[],int k){
+            int start=0, end=arr.length-1;
+            int missing=0;
+            while(start<=end){
+                int mid=start+(end-start)/2;
+                missing=arr[mid]-(mid+1);
 
+                if(missing<k){
+                    start=mid+1;
+                }
+                else end=mid-1;
+            }
+           return arr[end]+(k-missing); // return end+1+k; // return start+k;
+        }
+    }
+    //Median of two sorted Array
+    class Solution5{
+        public static double medianOfArrays1(int a[],int b[]){
+            int n=a.length+b.length;
+            int arr[]=new int[n];
+            int i=0,j=0,idx=0;
+           while(i<a.length && j<b.length){
+                arr[idx++]=a[i]<b[j] ? a[i++]:b[j++];
+           }
+           while(i<a.length){
+                arr[idx++]=a[i++];
+           }
+           while(j<b.length){
+                arr[idx++]=b[j++];
+           }
+           double ans=n%2==0 ? (arr[n/2]+arr[n/2-1])/2.0 :arr[n/2];
+            return ans;
+        }
+        public static double medianOfArraysWithoutExtraSpace(int a[],int b[]){
+            int n=a.length+b.length;
+            int i=0,j=0;
+            int c1=n/2,cnt=0;
+            int c2=c1-1,d1=-1,d2=-1;
 
+            while(i<a.length && j<b.length){
+                if(d1!=-1 && d2!=-1)break;
+            
+                if(a[i]<b[j]){
+                    if(cnt==c1)d1=a[i];
+                    if(cnt==c2)d2=a[i];
+                    i++;
+                    cnt++;
+                }
+                else{
+                    if(cnt==c1)d1=b[j];
+                    if(cnt==c2)d2=b[j];
+                    j++;
+                    cnt++;
+                }
+                
+            }
+            while(i<a.length){
+                if(d1!=-1 && d2!=-1)break;
+                if(cnt==c1)d1=a[i];
+                if(cnt==c2)d2=a[i];
+                cnt++;i++;
+           }
+            while(j<b.length){
+                if(d1!=-1 && d2!=-1)break;
+                if(cnt==c1)d1=b[j];
+                if(cnt==c2)d2=b[j];
+                cnt++;
+                j++;
+            }
+
+            if(n%2==1)return d1;
+            return (d1+d2)/2.0;
+        }       
+        public static double medianUsingHeaps(int arr[]){
+            PriorityQueue<Integer>left=new PriorityQueue<>((a,b)->b-a);
+            PriorityQueue<Integer>right=new PriorityQueue<>((a,b)->a-b);
+
+            for(int k:arr){
+                if(left.size()==0  || k<=left.peek()){
+                    left.add(k);
+                }
+                else{
+                    right.add(k);
+                }
+
+                int ls=left.size();
+                int rs=right.size();
+                // we are maintainig left size is greter that right -> ls=rs+1
+                if(ls-rs==2){//ls is more than rs
+                    right.add(left.poll());
+                }
+                else if(rs>ls){
+                    left.add(right.poll());
+                }
+            }
+            if(arr.length%2==0)return ((left.peek()*1.0)+(right.peek()*1.0))/2.0;
+            return left.peek()*1.0;
+        }
+        //this is the main pattern is made  
+        public static double medianUsingBS(int a[],int []b){
+            int n1=a.length,n2=b.length;
+            if(n1>n2)return medianUsingBS(b,a);
+            int left=(n1+n2+1)/2;
+           
+
+            int start=0,end=n1;
+            while(start<=end){
+                int mid1=(start+end)/2;
+                int mid2=left-mid1;
+                int l1=Integer.MIN_VALUE,l2=Integer.MIN_VALUE;
+                int r1=Integer.MAX_VALUE,r2=Integer.MAX_VALUE;
+
+                if(mid1<n1)r1=a[mid1];
+                if(mid2<n2)r2=b[mid2];
+                if(mid1-1>=0)l1=a[mid1-1];
+                if(mid2-1>=0)l2=b[mid2-1];
+
+                if(l1<=r2 && l2<=r1){
+                    if((n1+n2)%2==0){
+                        return (Math.max(l1, l2)+Math.min(r1,r2))/2.0;
+                    }
+                    return Math.max(l1, l2);
+                }
+                else if(l1>r2)end=mid1-1;
+                else if(l2>r1)start=mid1+1;
+            }
+
+            return 0;
+        }
+    }
+    //Gas Station Problem
+    //totally diff Algo
+    class Solution6{
+        static class Pair{
+             double diff;
+            int idx;
+            public Pair(double diff,int idx){
+                this.diff=diff;
+                this.idx=idx;
+            }
+        }
+        public static double bruteForce(int arr[],int k){
+            int n=arr.length;
+            int howMany[]=new int[n-1];
+
+            for(int i=0;i<k;i++){
+                double maxSections=-1;int max_index=-1;
+                for(int j=0;j<n-1;j++){
+                    int diff=arr[j+1]-arr[j];
+                    double sections=diff/((howMany[j]+1)*1.0);
+
+                    if(maxSections<sections){
+                        maxSections=sections;
+                        max_index=j;
+                    }
+                }
+                howMany[max_index]++;
+            }
+            double ans=-1;
+            for(int j=0;j<n-1;j++){
+                int diff=arr[j+1]-arr[j];
+                double sections=diff/((howMany[j]+1)*1.0);
+                ans=Math.max(ans,sections);
+            }
+
+            return ans;
+        }
+        public static double usingPQ(int arr[],int k){
+            PriorityQueue<Pair>pq=new PriorityQueue<>((a,b)->Double.compare(b.diff,a.diff));
+            int n=arr.length;
+            int howMany[]=new int[n-1];
+            for(int i=0;i<n-1;i++){
+                pq.add(new Pair(arr[i+1]-arr[i],i));
+            }
+            for(int i=0;i<k;i++){
+                Pair temp=pq.poll();
+                int idx=temp.idx;
+                howMany[idx]++;
+
+                double diff=arr[idx+1]-arr[idx];
+                double sections=diff/((howMany[idx]+1)*1.0);
+                pq.add(new Pair(sections, idx));
+            }
+            return pq.peek().diff;
+        }
+        
+        public static int calculate(int arr[],double mid){
+            int cnt=0;
+            for(int i=1;i<arr.length;i++){
+                int numberBetween=(int) ((arr[i]-arr[i-1])/mid);
+                if((arr[i]-arr[i-1])/mid ==numberBetween+mid){
+                    numberBetween--;
+                }
+                cnt+=numberBetween;
+            }
+            return cnt;
+        }
+
+        public static double usingBs(int arr[],int k){
+            int n=arr.length;
+            double start=0,end=0;
+            for(int j=0;j<n-1;j++){
+                int diff=arr[j+1]-arr[j];
+                end=Math.max(end,diff);
+            }
+
+            double diff=(double)1e-6;
+            while(end-start>diff){
+                double mid=start+(end-start)/2.0;
+                int ans=calculate(arr,mid);
+                if(ans>k){
+                    start=mid;
+                }
+                else end=mid;
+            }
+            return end;
+        }
+    }
 }
 
 public class BS{
@@ -477,6 +696,34 @@ public class BS{
 
         // System.out.println(BinarySearch.firstOccurance(arr, n, 80));
         // System.out.println(BinarySearch.peakElement(arr, n));
-        System.out.println(BinarySearch.nthRoot(27,4));
+        // System.out.println(BinarySearch.nthRoot(27,4));
+
+        // int arr[]={2,5,6,8,9};
+        // System.out.println(BinarySearch.Solution4.findMissing(arr, 6));
+
+        // int a[]={2,5,6,8,7};
+        // int b[]={1,2,4,5,9};
+        // System.out.println(BinarySearch.Solution5.medianOfArrays1(a, b));
+        // System.out.println(BinarySearch.Solution5.medianOfArraysWithoutExtraSpace(a, b));
+        // System.out.println(BinarySearch.Solution5.medianUsingBS(a, b));
+
+        // int arr[]=new int[10];
+        // int idx=0;
+        // for(int i=0;i<a.length;i++){
+        //     arr[idx++]=a[i];
+        //     arr[idx++]=b[i];
+        // }
+        // System.out.println(BinarySearch.Solution5.medianUsingHeaps(arr));
+
+        int arr[]={1,2,3,4,5,6,7,8,9,10};
+        System.out.println(BinarySearch.Solution6.bruteForce(arr, 9));
+        System.out.println(BinarySearch.Solution6.usingPQ(arr, 9));
+        System.out.println(BinarySearch.Solution6.usingBs(arr, 9));
+
+        int arr1[]={3,6,12,19,33,44,67,72,89,95};
+        System.out.println(BinarySearch.Solution6.bruteForce(arr1, 2));
+        System.out.println(BinarySearch.Solution6.usingPQ(arr1, 2));
+        System.out.println(BinarySearch.Solution6.usingBs(arr1, 2));
+
     }
 }
