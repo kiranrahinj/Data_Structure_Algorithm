@@ -686,6 +686,38 @@ class BinarySearch{
             return end;
         }
     }
+
+    //2D Questions
+    //matrix peak element-> Actual intution is apply BS on column then find max_ele on mid column. Then check their right and left val of that max_index ele
+    class Solution7 {
+        private int helper(int arr[][],int n,int m, int mid){
+            int max_val=-1,idx=-1;
+    
+            for(int i=0;i<n;i++){
+                if(max_val<arr[i][mid]){
+                    max_val=arr[i][mid];
+                    idx=i;
+                }
+            }
+            return idx;
+        }
+        public int[] findPeakGrid(int[][] arr) {
+            int n=arr.length,m=arr[0].length;
+            int start=0,end=m-1;
+    
+            while(start<=end){
+                int mid=start+(end-start)/2;
+                int maxIndex=helper(arr,n,m,mid);
+                int left=mid-1>=0?arr[maxIndex][mid-1]:-1;
+                int right=mid+1<m?arr[maxIndex][mid+1]:-1;
+    
+                if(arr[maxIndex][mid]>left && arr[maxIndex][mid]>right)return new int[]{maxIndex,mid};
+                else if(arr[maxIndex][mid]<right)start=mid+1;
+                else end=mid-1;
+            }
+            return new int[]{-1,-1};
+        }
+    }
 }
 
 public class BS{
