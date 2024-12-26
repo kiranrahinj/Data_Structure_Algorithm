@@ -718,6 +718,56 @@ class BinarySearch{
             return new int[]{-1,-1};
         }
     }
+    //this is the median on 2d array
+    //approach is know the ans where to where it will lie and then we need to check if how many element are from 0-mid means we can check that answer have that much elements are 
+    //less than to it or not
+    class Solution8 {
+        int upper_bound(int arr[],int target){
+            int n=arr.length;
+            int start=0,end=n-1,ans=n;
+            
+             while(start<=end){
+                int mid=start+(end-start)/2;
+                if(arr[mid]>target){
+                    ans=mid;
+                    end=mid-1;
+                }
+                else  start=mid+1;
+            }
+            return ans;
+        }
+        int blackbox(int [][]arr,int mid){
+            int n=arr.length,m=arr[0].length;
+            int cnt=0;
+            
+            for(int i=0;i<n;i++){
+                cnt+=upper_bound(arr[i],mid);
+            }
+            return cnt;
+        }
+        int median(int mat[][]) {
+            int start=Integer.MAX_VALUE,end=Integer.MIN_VALUE;
+            for(int i=0;i<mat.length;i++){
+                for(int j=0;j<mat[0].length;j++){
+                    start=Math.min(start,mat[i][j]);
+                    end=Math.max(end,mat[i][j]);
+                }
+            }
+            int n=mat.length,m=mat[0].length;
+            int req=(n*m)/2;
+            
+            while(start<=end){
+                int mid=start+(end-start)/2;
+                int k=blackbox(mat,mid);
+                
+                if(k<=req){
+                    start=mid+1;
+                }
+                else end=mid-1;
+            }
+            return start;
+        }
+    }
 }
 
 public class BS{
