@@ -513,7 +513,120 @@ class DP {
         return right+down;
     }
 
+    //Paint House problem
+    public static int rec_PaintHouse(int arr[][]){
+        int n=arr.length,m=arr[0].length;
+        int dp[][]=new int[n][m];
+        for(int h=0;h<arr.length;h++){
+            if(h==0){
+                dp[0][0]=arr[0][0];
+                dp[0][1]=arr[0][1];
+                dp[0][2]=arr[0][2];
+            }
+            else{
+                dp[h][0]=arr[h][0]+ Math.min(dp[h-1][1],dp[h-1][2]);
+                dp[h][1]=arr[h][1]+ Math.min(dp[h-1][0],dp[h-1][2]);
+                dp[h][2]=arr[h][2]+ Math.min(dp[h-1][0],dp[h-1][1]);
+            }
+        }
+        int ans=Integer.MAX_VALUE;
 
+        for(int i=0;i<n;i++){
+            ans=Math.min(ans,dp[n-1][i]);
+        }
+        return ans;
+    }
+
+    // Partition into K subarray.  This is really good problem
+    // https://course.acciojob.com/idle?question=5fce6e4c-9dda-4bec-87f1-8e57e27dd386
+    static int mod=100007 ;
+    public static int rec_kSubarrayWay(int n,int k){
+        if(n==0 || k==0 || k>n){
+            return 0;
+        }
+        if(n==k || k==1){
+            return 1;
+        }
+        return ((rec_kSubarrayWay(n-1,k)*k)%mod + rec_kSubarrayWay(n-1,k-1)%mod)%mod;
+    }
+
+    public static int memo_kSubarrayWay(int n,int k,int memo[][]){
+        if(n==0 || k==0 || k>n){
+            return 0;
+        }
+        if(n==k || k==1){
+            return 1;
+        }
+        if(memo[n][k]!=0)return memo[n][k];
+       
+        return memo[n][k]=((memo_kSubarrayWay(n-1,k,memo)*k)%mod + memo_kSubarrayWay(n-1,k-1,memo)%mod)%mod;
+    }
+    public static int tab_kSubarrayWay(int N, int K,int memo[][]) {
+        for(int n=0;n<=N;n++){
+            for(int k=0;k<=K;k++){
+               if(n==0 || k==0 || k>n){
+                    memo[n][k]=0;
+                    continue;
+               }
+                if(n==k || k==1){
+                    memo[n][k]= 1;
+                    continue;
+                }
+                memo[n][k]=((memo[n-1][k]*k)%mod + memo[n-1][k-1]%mod)%mod;
+            }
+        }
+       return memo[N][K];
+    }
+
+    //FRIENDS PAIRING PROBLEM
+    public static int rec_friend(int n){
+        if(n<=0)return 1;
+        // if(n==0)return 1;
+        return rec_friend(n-1)+rec_friend(n-2)*(n-1);
+    }
+   
+    //LIS
+    public static int tab_LIS(int arr[]){
+        int ans=0;
+        int n=arr.length;
+        int dp[]=new int[n];
+
+        for(int i=0;i<n;i++){
+            dp[i]=1;
+
+            for(int j=i-1;j>=0;j--){
+                if(arr[i]>arr[j]){
+                    dp[i]=Math.max(dp[i],dp[j]+1);
+                }
+            }
+            ans=Math.max(ans,dp[i]);
+        }
+
+        return ans;
+    }
+
+    //same pattern of above. In LIS we are checking element from j=0 -> i
+    //https://www.geeksforgeeks.org/problems/maximum-sum-increasing-subsequence4749/1
+    public int maxSumIS(int arr[]) {
+        int n=arr.length;
+        int dp[]=new int[n];
+        int ans=0;
+        
+        for(int i=0;i<n;i++){
+            dp[i]=arr[i];
+            
+            for(int j=i-1;j>=0;j--){
+                if(arr[i]>arr[j]){
+                    dp[i]=Math.max(dp[i],dp[j]+arr[i]);
+                }
+            }
+            ans=Math.max(dp[i],ans);
+        }
+        return ans;
+    }
+    
+    
+    
     public static void main(String[] args) {
         // int n=45;
         // // System.out.println(fib(n));
@@ -581,6 +694,19 @@ class DP {
         //              {4,5,3},
         //              {4,5,3}};
         // System.out.println(rec_ways(0, 0, arr));
+//---------------------------------------------------------------------------
+        // int arr[][]={{1,2,3},
+        //             {4,5,3},
+        //             {4,5,3}};
+        
+        // System.out.println(rec_PaintHouse(arr));
+//---------------------------------------------------------------------------
+        //paint house 2
+        // System.out.println(rec_friend(4));
+//---------------------------------------------------------------------------
+        // int arr[]={10,9,2,5,3,7,101,18};
+        // System.out.println(tab_LIS(arr));
+//---------------------------------------------------------------------------
 
     }
 }

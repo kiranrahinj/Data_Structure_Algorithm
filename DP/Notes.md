@@ -486,7 +486,7 @@
         
         int pick=0;
         if(sum-arr[idx]>=0){
-            pick=rec_coinChange(idx, arr, sum-arr[idx]);  //Not going to next idx because we can take many times
+            pick=rec_coinChange(idx, arr, sum-arr[idx]);  //Not going to next idx because we have to take many times
         }
         int  not_pick=rec_coinChange(idx+1, arr, sum);
 
@@ -535,5 +535,48 @@
             }
         }
         return dp[0][Sum];
+    }
+```
+**9. Partition into K subarray**
+
+```java 
+    // https://course.acciojob.com/idle?question=5fce6e4c-9dda-4bec-87f1-8e57e27dd386
+    static int mod=100007 ;
+    public static int rec_kSubarrayWay(int n,int k){
+        if(n==0 || k==0 || k>n){
+            return 0;
+        }
+        if(n==k || k==1){
+            return 1;
+        }
+        return ((rec_kSubarrayWay(n-1,k)*k)%mod + rec_kSubarrayWay(n-1,k-1)%mod)%mod;
+    }
+    
+    public static int memo_kSubarrayWay(int n,int k,int memo[][]){
+        if(n==0 || k==0 || k>n){
+            return 0;
+        }
+        if(n==k || k==1){
+            return 1;
+        }
+        if(memo[n][k]!=0)return memo[n][k];
+       
+        return memo[n][k]=((memo_kSubarrayWay(n-1,k,memo)*k)%mod + memo_kSubarrayWay(n-1,k-1,memo)%mod)%mod;
+    }
+    public static int tab_kSubarrayWay(int N, int K,int memo[][]) {
+        for(int n=0;n<=N;n++){
+            for(int k=0;k<=K;k++){
+               if(n==0 || k==0 || k>n){
+                    memo[n][k]=0;
+                    continue;
+               }
+                if(n==k || k==1){
+                    memo[n][k]= 1;
+                    continue;
+                }
+                memo[n][k]=((memo[n-1][k]*k)%mod + memo[n-1][k-1]%mod)%mod;
+            }
+        }
+       return memo[N][K];
     }
 ```
