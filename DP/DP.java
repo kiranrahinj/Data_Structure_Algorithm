@@ -586,6 +586,17 @@ class DP {
     }
    
     //LIS
+    public static int rec_LIS(int i,int arr[],int prev){
+        if(i==arr.length)return 0;
+
+        int not_pick=rec_LIS(i+1,arr,prev);
+        int pick=0;
+        if(arr[i]>prev){
+            pick=1+rec_LIS(i+1,arr,arr[i]);
+        }
+        return Math.max(pick,not_pick);
+    }
+    
     public static int tab_LIS(int arr[]){
         int ans=0;
         int n=arr.length;
@@ -625,7 +636,7 @@ class DP {
         return ans;
     }
     
-    
+
     
     public static void main(String[] args) {
         // int n=45;
